@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"testing"
 )
@@ -22,7 +23,7 @@ func TestMain(m *testing.M) {
 
 	build := exec.Command("go", "build", "-o", binName)
 	if err := build.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "Cannor build tool %s: %s", binName.err)
+		fmt.Fprintf(os.Stderr, "Cannor build tool %s: %s", binName, err)
 		os.Exit(1)
 	}
 
@@ -34,5 +35,39 @@ func TestMain(m *testing.M) {
 	os.Remove(fileName)
 
 	os.Exit(result)
+
+}
+
+func TestTodoCLI(t *testing.T) {
+	task := "test task number 1"
+
+	dir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cmdPath := filepath.Join(dir, binName)
+
+	t.Run("AddNewTask", func(t *testing.T) {
+		cmd := exec.Command(cmdPath, "-task", task)
+		if err := cmd.Run(); err != nil {
+			t.Fatal(err)
+		}
+
+	})
+
+	t.Run("ListTasks", func(t *testing.T) {
+		cmd := exec.Command(cmdPath, "-list")
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected := task + "\n"
+		if expected != string(out) {
+
+			t.Errorf("Expected %q, got %q\n", expected, string(out))
+		}
+	})
 
 }
