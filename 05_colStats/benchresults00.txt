@@ -1,0 +1,16 @@
+goos: linux
+goarch: amd64
+pkg: github.com/Martin-Martinez4/go-cli/colStats
+cpu: AMD Ryzen 5 2600 Six-Core Processor            
+BenchmarkRun-12    	      12	1390135237 ns/op
+BenchmarkRun-12    	      12	1442493676 ns/op
+BenchmarkRun-12    	      12	1455679282 ns/op
+BenchmarkRun-12    	      12	1461824900 ns/op
+BenchmarkRun-12    	      12	1498236356 ns/op
+BenchmarkRun-12    	      12	1459658517 ns/op
+BenchmarkRun-12    	      12	1476544715 ns/op
+BenchmarkRun-12    	      12	1507469435 ns/op
+BenchmarkRun-12    	      12	1478937625 ns/op
+BenchmarkRun-12    	      12	1499187440 ns/op
+PASS
+ok  	github.com/Martin-Martinez4/go-cli/colStats	190.712s

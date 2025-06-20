@@ -40,7 +40,7 @@ func TestOperations(t *testing.T) {
 	}
 }
 
-func TestCSV2Float(t *testing.T) {
+func TestCSVToFloat(t *testing.T) {
 	csvData := `IP Address,Requests,Response Time
 	192.168.0.199,2056,236
 	192.168.0.88,899,220
@@ -69,11 +69,11 @@ func TestCSV2Float(t *testing.T) {
 			r:      bytes.NewBufferString(csvData),
 		},
 		{
-			name:   "FailedRead",
+			name:   "FailRead",
 			col:    1,
 			exp:    nil,
 			expErr: iotest.ErrTimeout,
-			r:      iotest.TimeoutReader(bytes.NewBuffer([]byte{0})),
+			r:      iotest.TimeoutReader(bytes.NewReader([]byte{0})),
 		},
 		{
 			name:   "FailedNotNumber",

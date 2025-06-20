@@ -28,16 +28,19 @@ func csvToFloat(r io.Reader, column int) ([]float64, error) {
 
 	cr.ReuseRecord = true
 	// From natural number index to slice index
-	column -= 1
-
-	allData, err := cr.ReadAll()
-	if err != nil {
-		return nil, fmt.Errorf("cannot read data from file: %w", err)
-	}
+	column--
 
 	var data []float64
 
-	for i, row := range allData {
+	for i := 0; ; i++ {
+		row, err := cr.Read()
+
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, fmt.Errorf("cannot read data from file: %w", err)
+		}
 		if i == 0 {
 			continue
 		}

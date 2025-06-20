@@ -1,0 +1,50 @@
+To run a specific test, in this case the benchmark test use:
+^$ skips running any of the tests in the test file while executing the benchmark.
+
+go test -bench . -run ^$
+
+
+To force additional executions use the benchmark flag
+
+go test -bench . -benchtime=10x -run ^$
+
+
+To tee to file use
+
+go test -bench . -benchtime=10x -run ^$ | tee filename.txt
+
+
+To enable the CPU profiler use:
+
+go test -bench . -benchmark=10x -run ^$ -cpuprofile cpu00.pprof
+
+Use the top command to see where the program is spending most of the time.  
+Sort based on cumulative time by using the option -cum with the top command.  
+
+(pprof) top -cum
+
+Use the list subcommand to profile a certain function line by line
+
+(pprof) list csvToFloat
+
+To open graph view in a browser use 
+
+(pprof) web
+
+- Memory profiling
+
+go test -bench . -benchtime=10x -run ^$ -memprofile mem00.pprof
+
+Use tge alloc_space option to see allocated memory.
+
+go tool pprof -alloc_space mem00.pprof
+
+To compare benchmarks install benchstat
+go install golang.org/x/perf/cmd/benchstat@latest
+
+Then use benchstat file1.txt file2.txt
+
+benchstat needs at least 6 samples
+
+go test -bench . -count=10 -benchtime=12x -run ^$ | tee benchresults01.txt
+
