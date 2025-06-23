@@ -5,22 +5,37 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"os"
 
+	"github.com/Martin-Martinez4/go-cli/pScan/scan"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
+
+func listAction(out io.Writer, hostsFile string, args []string) error {
+	hl := &scan.HostsList{}
+	if err := hl.Load(hostsFile); err != nil {
+		return err
+	}
+	for _, h := range hl.Hosts {
+		if _, err := fmt.Fprintln(out, h); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:     "list",
+	Aliases: []string{"l"},
+	Short:   "Lists hosts in hosts list",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		hostsFile := viper.GetString("hosts-file")
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		return listAction(os.Stdout, hostsFile, args)
 	},
 }
 

@@ -5,22 +5,40 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"os"
 
+	"github.com/Martin-Martinez4/go-cli/pScan/scan"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
+
+func deleteAction(out io.Writer, hostsFile string, args []string) error {
+	hl := &scan.HostsList{}
+	if err := hl.Load(hostsFile); err != nil {
+		return err
+	}
+
+	for _, h := range args {
+		if err := hl.Remove(h); err != nil {
+			return err
+		}
+		fmt.Fprintln(out, "Deleted host:", h)
+	}
+	return hl.Save(hostsFile)
+}
 
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:          "delete",
+	Aliases:      []string{"d"},
+	SilenceUsage: true,
+	Args:         cobra.MinimumNArgs(1),
+	Short:        "Delete host(s) from the list",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		hostsFile := viper.GetString("hosts-file")
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
+		return deleteAction(os.Stdout, hostsFile, args)
 	},
 }
 
